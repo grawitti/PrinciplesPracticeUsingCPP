@@ -7,8 +7,6 @@
 #ifndef SIMPLE_WINDOW_GUARD
 #define SIMPLE_WINDOW_GUARD 1
 
-// #include <FL/Fl.H>
-// #include <FL/Fl_Window.H>
 #include "GUI.h"    // for Simple_window only (doesn't really belong in Window.h)
 #include "Graph.h"
 

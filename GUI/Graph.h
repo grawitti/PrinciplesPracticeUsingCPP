@@ -51,7 +51,7 @@ struct Color {
 
     int as_int() const { return c; }
 public:
-    char visibility() const { return v; } 
+    char visibility() const { return v; }
     void set_visibility(Transparency vv) { v=vv; }
 private:
     char v;    // invisible and visible for now
@@ -64,8 +64,8 @@ struct Line_style {
     enum Line_style_type {
         solid=FL_SOLID,            // -------
         dash=FL_DASH,              // - - - -
-        dot=FL_DOT,                // ....... 
-        dashdot=FL_DASHDOT,        // - . - . 
+        dot=FL_DOT,                // .......
+        dashdot=FL_DASHDOT,        // - . - .
         dashdotdot=FL_DASHDOTDOT,  // -..-..
     };
 
@@ -144,7 +144,7 @@ public:
 
 typedef double Fct(double);
 
-class Shape  {        // deals with color and style, and holds sequence of lines 
+class Shape  {        // deals with color and style, and holds sequence of lines
 public:
     void draw() const;                 // deal with color and draw lines
     virtual void move(int dx, int dy); // move the shape +=dx and +=dy
@@ -161,14 +161,14 @@ public:
 
     virtual ~Shape() { }
 protected:
-    Shape();    
+    Shape();
     virtual void draw_lines() const;   // draw the appropriate lines
     void add(Point p);                 // add p to points
     void set_point(int i,Point p);     // points[i]=p;
 //private:
     vector<Point> points;              // not used by all shapes
     Color lcolor;                      // color for lines and characters
-    Line_style ls; 
+    Line_style ls;
     Color fcolor;                      // fill color
 
     Shape(const Shape&);               // prevent copying
@@ -180,9 +180,25 @@ protected:
 struct Function : Shape {
     // the function parameters are not stored
     Function(Fct f, double r1, double r2, Point orig,
-        int count = 100, double xscale = 25, double yscale = 25);    
+        int count = 100, double xscale = 25, double yscale = 25);
 };
-
+//------------------------------------------------------------------------------
+/*
+struct Function_arg : Shape {
+    // the function parameters are not stored
+    Function_arg(Fct ff, double rr1, double rr2, Point o,
+        int c = 100, double xs = 25, double ys = 25)
+    :f(ff), r1(rr1), r2(rr2), orig(o), count(c), xscale(xs), yscale(ys);
+private:
+    Fct f;
+    double r1;
+    double r2;
+    Point xy;
+    int count;
+    double xscale;
+    double yscale;
+};
+*/
 //------------------------------------------------------------------------------
 
 struct Line : Shape {            // a Line is a Shape defined by two Points
@@ -248,7 +264,7 @@ struct Closed_polyline : Open_polyline { // closed sequence of lines
 //------------------------------------------------------------------------------
 
 struct Regular_polygon : Closed_polyline { // closed sequence of lines
-	Regular_polygon(Point p, int rr, int nn) : loc{p}, R{rr}, n{nn} 
+	Regular_polygon(Point p, int rr, int nn) : loc{p}, R{rr}, n{nn}
 	{
 		if(n < 3) error("Number of sides must be 3 or more.");
 		for(int i = 0; i < n; ++i)
@@ -267,13 +283,13 @@ struct Regular_polygon : Closed_polyline { // closed sequence of lines
 
 //------------------------------------------------------------------------------
 
-struct Regular_hexagon : Regular_polygon { 
+struct Regular_hexagon : Regular_polygon {
 	Regular_hexagon(Point p, int rr) : Regular_polygon{p, rr, 6} {  }
 };
 
 //------------------------------------------------------------------------------
 
-struct Octagon : Regular_polygon { 
+struct Octagon : Regular_polygon {
 	Octagon(Point p, int rr) : Regular_polygon{p, rr, 8} {  }
 };
 
@@ -282,14 +298,14 @@ struct Octagon : Regular_polygon {
 Point rotate(const Point& p, Point center, int radius, int grad);
 
 struct Right_triangle : Closed_polyline {
-	Right_triangle(Point p, int hh, int ww) : loc{p}, h{hh}, w{ww} 
+	Right_triangle(Point p, int hh, int ww) : loc{p}, h{hh}, w{ww}
 	{
 		add(loc);
 		add(loc-Point{0,h});
 		add(loc+Point{w,0});
 	}
 
-	Right_triangle(Point p, int hh, int ww, int grd) : loc{p}, h{hh}, w{ww}, grad{grd} 
+	Right_triangle(Point p, int hh, int ww, int grd) : loc{p}, h{hh}, w{ww}, grad{grd}
 	{
 		Point p1{rotate(loc-Point{0,h},loc,w,grad)};
 		Point p2{rotate(loc+Point{w,0},loc,h,grad+90)};
@@ -328,7 +344,7 @@ struct Arrow : Line {
 };
 
 //struct Arrow : Lines {                 // related lines
-	//Arrow(Point p1, Point p2) 
+	//Arrow(Point p1, Point p2)
 	//{
 		//add(p1,p2);
 	//}
@@ -352,7 +368,7 @@ struct Text : Shape {
 
     void set_font_size(int s) { fnt_sz = s; }
     int font_size() const { return fnt_sz; }
-	Text& operator=(const Text& right) 
+	Text& operator=(const Text& right)
 	{
 		point(0) = right.point(0);
 		lab = right.lab;
@@ -387,7 +403,7 @@ struct Circle : Shape {
 
     void draw_lines() const;
 
-    Point center() const ; 
+    Point center() const ;
     int radius() const { return r; }
     void set_radius(int rr) { r=rr; }
 
@@ -413,7 +429,7 @@ struct Striped_circle : Circle {
 //------------------------------------------------------------------------------
 
 struct Immobile_Circle : Circle {
-	Immobile_Circle(Point p, int r) : Circle{p,r} { 
+	Immobile_Circle(Point p, int r) : Circle{p,r} {
 		add(Point(p.x-r,p.y-r));
 	}
 	void move(int dx, int dy) { error("Class Immobile_Circle objects cannot be moved."); }
@@ -443,7 +459,7 @@ struct Frowny : Smiley {
 //------------------------------------------------------------------------------
 
 struct Smiley_hat : Smiley {
-	Smiley_hat(Point p, int r) : Smiley{p, r} 
+	Smiley_hat(Point p, int r) : Smiley{p, r}
 	{
 		add(Point(p.x-r,p.y-r));
 	}
@@ -468,7 +484,7 @@ struct Ellipse : Shape {
 	Ellipse() {}
     Ellipse(Point p, int w, int h)    // center, min, and max distance from center
         : loc(p), w(w), h(h)
-    { 
+    {
         add(Point(p.x-w,p.y-h));
     }
 
@@ -516,7 +532,7 @@ private:
 struct Box : Shape {
 	Box() {}
 	Box(Point xy, int w, int h, int d)
-		: loc(xy), w(w), h(h), d(d) 
+		: loc(xy), w(w), h(h), d(d)
 		{
 			add(xy+Point{w,0}); // Top Right point
 			add(xy); // Top left
@@ -531,7 +547,7 @@ struct Box : Shape {
 			add(xy+Point{0,h}); // Bottom left
 			add(xy+Point{w,h}); // Bottom right
 		}
-	void draw_lines() const; 
+	void draw_lines() const;
 
 	Point nw() { return loc; }
 	Point n() const { return loc+Point{w/2,0}; }
@@ -606,7 +622,7 @@ private:
 
 struct Group : Shape {
 	void shape_add(Shape& s) { shapes.push_back(s); }
-	
+
 	void draw() const;
 	void move(int dx, int dy);
 	void set_color(Color col);
@@ -650,7 +666,7 @@ struct Image : Shape {
     void set_mask(Point xy, int ww, int hh) { w=ww; h=hh; cx=xy.x; cy=xy.y; }
 private:
     int w,h;  // define "masking box" within image relative to position (cx,cy)
-    int cx,cy; 
+    int cx,cy;
     Fl_Image* p;
     Text fn;
 };
@@ -691,7 +707,7 @@ public:
 		if(levels > 8 || levels < 0) error("levels could not be > 8 and < 0");
 		build_tree();
 		put_text();
-	}		
+	}
 
 	int step_left(const int& i);
 	int step_rigth(const int& i);

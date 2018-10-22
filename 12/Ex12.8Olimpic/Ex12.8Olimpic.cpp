@@ -1,4 +1,4 @@
-#include "../../GUI/Simple_window.h"
+#include "../../GUI/Window.h"
 #include "../../GUI/Graph.h"
 #include <stdexcept>
 
@@ -9,7 +9,7 @@ int main()
 	try 
 	{
 		Point t1(0,0);
-		Simple_window win(t1,x_max(),y_max(),"Ex. 12.8");
+		Graph_lib::Window win(t1,x_max(),y_max(),"Ex. 12.8");
 
 		Circle blue {Point{300,300},150};
 		blue.set_color(Color::blue);
@@ -37,7 +37,8 @@ int main()
 		win.attach(green);
 
 
-		win.wait_for_button();		
+		//win.wait_for_button();		
+		return gui_main();
 	}
 	catch (std::exception& e) 
 	{

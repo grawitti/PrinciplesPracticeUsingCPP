@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1539952764 source:/Users/ruslansahibgareev/Documents/C++Test/15/Ex15.2Fctcb/main.cpp
+	<FL/Fl.H>
+	<FL/Fl_Window.H>
+	<FL/Fl_Box.H>
+

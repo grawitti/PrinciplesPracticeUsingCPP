@@ -18,11 +18,11 @@ struct Point {
 
 //------------------------------------------------------------------------------
 
-//inline std::ostream& operator<<(std::ostream& os, Point p) { return os << p.x << ", " << p.y; } 
+//inline std::ostream& operator<<(std::ostream& os, Point p) { return os << p.x << ", " << p.y; }
 
 //------------------------------------------------------------------------------
 
-inline bool operator==(Point a, Point b) { return a.x==b.x && a.y==b.y; } 
+inline bool operator==(Point a, Point b) { return a.x==b.x && a.y==b.y; }
 
 //------------------------------------------------------------------------------
 

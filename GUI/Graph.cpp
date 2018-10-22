@@ -21,7 +21,7 @@ ostream& operator<<(ostream& out, Point& a) {
 
 //------------------------------------------------------------------------------
 
-Shape::Shape() : 
+Shape::Shape() :
     lcolor(fl_color()),      // default color for lines and characters
     ls(0),                   // default style
     fcolor(Color::invisible) // no fill
@@ -79,12 +79,12 @@ void Shape::move(int dx, int dy)    // move the shape +=dx and +=dy
 Point rotate(const Point& p, Point center, int radius, int grad)
 {
 	double alpha = (grad*M_PI)/180;
-	double xa, ya;                                              
+	double xa, ya;
 	xa = center.x + radius * sin(alpha);
 	ya = center.y + radius * cos(alpha);
 	return {int(xa), int(ya)};
-}   
- 
+}
+
 //------------------------------------------------------------------------------
 
 Line::Line(Point p1, Point p2)    // construct a line from two points
@@ -149,9 +149,9 @@ void Arrow::draw_lines() const
 	//{
 		//fl_line(point(0).x,point(0).y,point(1).x,point(1).y);
 		//if(point(0).x == point(1).x && point(0).y == point(1).y) error("Point p1 = point p2");
-		//if(point(0).x == point(1).x) 
+		//if(point(0).x == point(1).x)
 		//{
-			//if(point(0).y > point(1).y) 
+			//if(point(0).y > point(1).y)
 			//{
 				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y+10);
 				//fl_line(point(1).x-5,point(1).y+10,point(1).x+5,point(1).y+10);
@@ -162,11 +162,11 @@ void Arrow::draw_lines() const
 				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y-10);
 				//fl_line(point(1).x-5,point(1).y-10,point(1).x+5,point(1).y-10);
 				//fl_line(point(1).x+5,point(1).y-10,point(1).x,point(1).y);
-			//}	
+			//}
 		//}
-		//else if (point(0).y == point(1).y) 
+		//else if (point(0).y == point(1).y)
 		//{
-			//if(point(0).x > point(1).x) 
+			//if(point(0).x > point(1).x)
 			//{
 				//fl_line(point(1).x,point(1).y,point(1).x+10,point(1).y-5);
 				//fl_line(point(1).x+10,point(1).y-5,point(1).x+10,point(1).y+5);
@@ -177,9 +177,9 @@ void Arrow::draw_lines() const
 				//fl_line(point(1).x,point(1).y,point(1).x-10,point(1).y-5);
 				//fl_line(point(1).x-10,point(1).y-5,point(1).x-10,point(1).y+5);
 				//fl_line(point(1).x-10,point(1).y+5,point(1).x,point(1).y);
-			//}	
+			//}
 		//}
-		//else if (point(0).x < point(1).x) 
+		//else if (point(0).x < point(1).x)
 		//{
 			//if (point(0).y < point(1).y)
 			//{
@@ -187,15 +187,15 @@ void Arrow::draw_lines() const
 				//fl_line(point(1).x-5,point(1).y-10,point(1).x-10,point(1).y-5);
 				//fl_line(point(1).x-10,point(1).y-5,point(1).x,point(1).y);
 			//}
-			//else 
+			//else
 			//{
 				//fl_line(point(1).x,point(1).y,point(1).x-10,point(1).y+5);
 				//fl_line(point(1).x-10,point(1).y+5,point(1).x-5,point(1).y+10);
 				//fl_line(point(1).x-5,point(1).y+10,point(1).x,point(1).y);
 			//}
-		//} else if (point(0).x > point(1).x) 
+		//} else if (point(0).x > point(1).x)
 		//{
-			//if (point(0).y > point(1).y) 
+			//if (point(0).y > point(1).y)
 			//{
 				//fl_line(point(1).x,point(1).y,point(1).x+5,point(1).y+10);
 				//fl_line(point(1).x+5,point(1).y+10,point(1).x+10,point(1).y+5);
@@ -206,7 +206,7 @@ void Arrow::draw_lines() const
 				//fl_line(point(1).x,point(1).y,point(1).x+5,point(1).y-10);
 				//fl_line(point(1).x+5,point(1).y-10,point(1).x+10,point(1).y-5);
 				//fl_line(point(1).x+10,point(1).y-5,point(1).x,point(1).y);
-			//}		
+			//}
 		//}
 	//}
 //}
@@ -215,7 +215,7 @@ void Arrow::draw_lines() const
 
 // does two lines (p1,p2) and (p3,p4) intersect?
 // if se return the distance of the intersect point as distances from p1
-inline pair<double,double> line_intersect(Point p1, Point p2, Point p3, Point p4, bool& parallel) 
+inline pair<double,double> line_intersect(Point p1, Point p2, Point p3, Point p4, bool& parallel)
 {
     double x1 = p1.x;
     double x2 = p2.x;
@@ -269,7 +269,7 @@ void Polygon::add(Point p)
         if (line_segment_intersect(point(np-1),p,point(i-1),point(i),ignore))
             error("intersect in polygon");
     }
-    
+
 
     Closed_polyline::add(p);
 }
@@ -295,7 +295,7 @@ void Open_polyline::draw_lines() const
         fl_end_complex_polygon();
         fl_color(color().as_int());    // reset color
     }
-    
+
     if (color().visibility())
         Shape::draw_lines();
 }
@@ -307,7 +307,7 @@ void Closed_polyline::draw_lines() const
     Open_polyline::draw_lines();    // first draw the "open poly line part"
     // then draw closing line:
     if (color().visibility())
-        fl_line(point(number_of_points()-1).x, 
+        fl_line(point(number_of_points()-1).x,
         point(number_of_points()-1).y,
         point(0).x,
         point(0).y);
@@ -401,7 +401,7 @@ void draw_mark(Point xy, char c)
 void Marked_polyline::draw_lines() const
 {
     Open_polyline::draw_lines();
-    for (int i=0; i<number_of_points(); ++i) 
+    for (int i=0; i<number_of_points(); ++i)
         draw_mark(point(i),mark[i%mark.size()]);
 }
 
@@ -422,12 +422,12 @@ void Rectangle::draw_lines() const
 
 //------------------------------------------------------------------------------
 
-void Striped_rectangle::draw_lines() const 
+void Striped_rectangle::draw_lines() const
 {
     if (fill_color().visibility()) {    // fill lines
         fl_color(fill_color().as_int());
         fl_rect(point(0).x,point(0).y,w,h);
-		for(int i = 1; i < h; i+=2) 
+		for(int i = 1; i < h; i+=2)
 		{
 			fl_line(loc.x,loc.y+i,loc.x+w-1,loc.y+i);
 		}
@@ -456,7 +456,7 @@ Point Circle::center() const
 //------------------------------------------------------------------------------
 
 void Circle::draw_lines() const {
-	if (fill_color().visibility()) 
+	if (fill_color().visibility())
 	{
         fl_color(fill_color().as_int());
         fl_arc(point(0).x,point(0).y,r+r,r+r,0,360);
@@ -470,7 +470,7 @@ void Striped_circle::draw_lines() const
 {
 	if (fill_color().visibility()) {
         fl_color(fill_color().as_int());
-		for(int i = 2; i < 180; i+=2) 
+		for(int i = 2; i < 180; i+=2)
 		{
 			fl_line((loc.x+r*sin((i*M_PI)/180))-1,loc.y+r*cos((i*M_PI)/180),(loc.x+r*sin(((360-i)*M_PI)/180))+1,loc.y+r*cos(((360-i)*M_PI)/180));
 		}
@@ -522,7 +522,7 @@ void Frowny::draw_lines() const
 
 //------------------------------------------------------------------------------
 
-void Smiley_hat::draw_hat() const 
+void Smiley_hat::draw_hat() const
 {
 	fl_line(n().x-r/2,n().y,n().x+r/2,n().y);
 	fl_line(n().x-r/4,n().y,n().x-r/3,n().y-r/3);
@@ -543,7 +543,7 @@ void Smiley_hat::draw_lines() const
 
 //------------------------------------------------------------------------------
 
-void Frowny_hat::draw_hat() const 
+void Frowny_hat::draw_hat() const
 {
 	fl_line(n().x-r/2,n().y,n().x+r/2,n().y);
 	fl_line(n().x-r/3,n().y,n().x-r/4,n().y-r/3);
@@ -593,7 +593,7 @@ void Box::draw_lines() const
 
 		// Arcs
 		fl_arc(point(0).x-d,point(0).y,d,d,0,90); // Top right angle. 0,90 - angle for arc = 0 to 90 ...
-		fl_arc(point(1).x,point(1).y,d,d,90,180); // Top left 
+		fl_arc(point(1).x,point(1).y,d,d,90,180); // Top left
 		fl_arc(point(2).x,point(2).y-d,d,d,180,270); // Bottom left
 		fl_arc(point(3).x-d,point(3).y-d,d,d,270,360); // Bottom right
 
@@ -761,9 +761,24 @@ Function::Function(Fct f, double r1, double r2, Point xy,
         r += dist;
     }
 }
-
+    //------------------------------------------------------------------------------
+/*
+Function_arg::Function_arg(Fct ff, double rr1, double rr2, Point o,
+                       int c, double xs, double ys)
+    // graph f(x) for x in [r1:r2) using count line segments with (0,0) displayed at xy
+    // x coordinates are scaled by xscale and y coordinates scaled by yscale
+    {
+        if (r2-r1<=0) error("bad graphing range");
+        if (count <=0) error("non-positive graphing count");
+        double dist = (r2-r1)/count;
+        double r = r1;
+        for (int i = 0; i<count; ++i) {
+            add(Point(xy.x+int(r*xscale),xy.y-int(f(r)*yscale)));
+            r += dist;
+        }
+}
 //------------------------------------------------------------------------------
-
+*/
 
 ifstream can_open(const string& s)
 // check if a file named s exists and can be opened for reading
@@ -778,8 +793,8 @@ ifstream can_open(const string& s)
 
 Suffix::Encoding get_encoding(const string& s)
 {
-    struct SuffixMap 
-    { 
+    struct SuffixMap
+    {
         const char*      extension;
         Suffix::Encoding suffix;
     };
@@ -855,7 +870,7 @@ void PseudoWindow::draw_lines() const {
 	vector<Color> buttons_color {Color::red, Color::yellow, Color::green};
 	int buttons_size = 10;
 	int buttons_offset = 10;
-	for(int i = 0; i<3; ++i) 
+	for(int i = 0; i<3; ++i)
 	{
 		buttons.push_back(new Rectangle{start_buttons+Point{i*(buttons_size+buttons_offset),0},buttons_size,buttons_size});
 		buttons[i].set_fill_color(buttons_color[i]);
@@ -881,14 +896,14 @@ void BinaryTree::draw_ribs() const
 				{
 					ribs.push_back(new Arrow(start_point,end_point));
 				break;
-				}  
+				}
 				case BinaryTree::arrow_down:
 				{
 					swap(start_point.x,end_point.x);
 					swap(start_point.y,end_point.y);
 					ribs.push_back(new Arrow(start_point,end_point));
 				break;
-				}  
+				}
 				default:
 				{
 					ribs.push_back(new Line(start_point,end_point));
@@ -918,10 +933,10 @@ int BinaryTree::step_rigth(const int& i)
 void BinaryTree::add_text(string pos, string text)
 {
 	if (pos.size() > levels-1) error("Text label positions cannot  > levels-1");
-	int i = 0; 
+	int i = 0;
 	for(char c : pos)
 	{
-		if (!(isspace(c))) 
+		if (!(isspace(c)))
 		{
 			switch(c)
 			{
@@ -929,14 +944,14 @@ void BinaryTree::add_text(string pos, string text)
 					return labels[0].set_label(text);
 				break;
 				case 'l':
-					i = step_left(i);	
+					i = step_left(i);
 				break;
 				case 'r':
-					i = step_rigth(i);	
+					i = step_rigth(i);
 				break;
 				default: error("Text for oisitions of node must be l, r or 0");
 			}
-		} 
+		}
 		else continue;
 	}
 	labels[i].set_label(text);
@@ -953,7 +968,7 @@ void BinaryTree::build_tree()
 		int x = w;
 		for(int j = 0; x < w_width-25; ++j)
 		{
-			if (j%2 == 0) 
+			if (j%2 == 0)
 			{
 				nodes.push_back(new Circle(Point{x,y},r));
 			}
@@ -1007,11 +1022,11 @@ void BinaryTreeT::draw_lines() const {
 		int x = w;
 		for(int j = 0; x < w_width-25; ++j)
 		{
-			if (j%2 == 0) 
+			if (j%2 == 0)
 			{
 				nodes.push_back(new Right_triangle(Point{x,y},r,r));
 				nodes[nodes.size()-1].draw();
-				if(i>0) 
+				if(i>0)
 				{
 					if((nodes.size()-1)%2 != 0)
 					{
