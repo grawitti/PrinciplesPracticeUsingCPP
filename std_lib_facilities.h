@@ -102,13 +102,13 @@ struct String : std::string {
 	using size_type = std::string::size_type;
 //	using string::string;
 
-	char& operator[](unsigned int i) // rather than return at(i);
+	char& operator[](const int i) // rather than return at(i);
 	{
 		if (i<0||size()<=i) throw Range_error(i);
 		return std::string::operator[](i);
 	}
 
-	const char& operator[](unsigned int i) const
+	const char& operator[](const  int i) const
 	{
 		if (i<0||size()<=i) throw Range_error(i);
 		return std::string::operator[](i);

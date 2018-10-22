@@ -14,6 +14,13 @@ namespace Graph_lib {
 
 //------------------------------------------------------------------------------
 
+ostream& operator<<(ostream& out, Point& a) {
+    out << "(" << a.x << "," << a.y << ")";
+    return out;
+}
+
+//------------------------------------------------------------------------------
+
 Shape::Shape() : 
     lcolor(fl_color()),      // default color for lines and characters
     ls(0),                   // default style
@@ -68,6 +75,17 @@ void Shape::move(int dx, int dy)    // move the shape +=dx and +=dy
 }
 
 //------------------------------------------------------------------------------
+// Поворот точки по окружности с центром в т. center и радиусом radius на угол alpha (в радианах Например 45 градусов = M_PI/4)
+Point rotate(const Point& p, Point center, int radius, int grad)
+{
+	double alpha = (grad*M_PI)/180;
+	double xa, ya;                                              
+	xa = center.x + radius * sin(alpha);
+	ya = center.y + radius * cos(alpha);
+	return {int(xa), int(ya)};
+}   
+ 
+//------------------------------------------------------------------------------
 
 Line::Line(Point p1, Point p2)    // construct a line from two points
 {
@@ -92,6 +110,106 @@ void Lines::draw_lines() const
         for (int i=1; i<number_of_points(); i+=2)
             fl_line(point(i-1).x,point(i-1).y,point(i).x,point(i).y);
 }
+
+//------------------------------------------------------------------------------
+void Arrow::draw_lines() const
+{
+    Line::draw_lines();
+
+    // add arrowhead: p2 and two points
+    double line_len =
+        sqrt(double(pow(point(1).x-point(0).x,2) + pow(point(1).y-point(0).y,2)));  // length of p1p2
+
+    // coordinates of the a point on p1p2 with distance 8 from p2
+    double pol_x = 8/line_len*point(0).x + (1-8/line_len)*point(1).x;
+    double pol_y = 8/line_len*point(0).y + (1-8/line_len)*point(1).y;
+
+    // pl is 4 away from p1p2 on the "left", pl_pol is orthogonal to p1p2
+    double pl_x = pol_x + 4/line_len*(point(1).y-point(0).y);
+    double pl_y = pol_y + 4/line_len*(point(0).x-point(1).x);
+
+    // pr is 4 away from p1p2 on the "right", pr_pol is orthogonal to p1p2
+    double pr_x = pol_x + 4/line_len*(point(0).y-point(1).y);
+    double pr_y = pol_y + 4/line_len*(point(1).x-point(0).x);
+
+    // draw arrowhead - is always filled in line color
+    if (color().visibility()) {
+        fl_begin_complex_polygon();
+        fl_vertex(point(1).x,point(1).y);
+        fl_vertex(pl_x,pl_y);
+        fl_vertex(pr_x,pr_y);
+        fl_end_complex_polygon();
+    }
+}
+
+// draw lines connecting pairs of points
+//void Arrow::draw_lines() const
+//{
+    //if (color().visibility())
+	//{
+		//fl_line(point(0).x,point(0).y,point(1).x,point(1).y);
+		//if(point(0).x == point(1).x && point(0).y == point(1).y) error("Point p1 = point p2");
+		//if(point(0).x == point(1).x) 
+		//{
+			//if(point(0).y > point(1).y) 
+			//{
+				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y+10);
+				//fl_line(point(1).x-5,point(1).y+10,point(1).x+5,point(1).y+10);
+				//fl_line(point(1).x+5,point(1).y+10,point(1).x,point(1).y);
+			//}
+			   //else
+			   //{
+				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y-10);
+				//fl_line(point(1).x-5,point(1).y-10,point(1).x+5,point(1).y-10);
+				//fl_line(point(1).x+5,point(1).y-10,point(1).x,point(1).y);
+			//}	
+		//}
+		//else if (point(0).y == point(1).y) 
+		//{
+			//if(point(0).x > point(1).x) 
+			//{
+				//fl_line(point(1).x,point(1).y,point(1).x+10,point(1).y-5);
+				//fl_line(point(1).x+10,point(1).y-5,point(1).x+10,point(1).y+5);
+				//fl_line(point(1).x+10,point(1).y+5,point(1).x,point(1).y);
+			//}
+			   //else
+			   //{
+				//fl_line(point(1).x,point(1).y,point(1).x-10,point(1).y-5);
+				//fl_line(point(1).x-10,point(1).y-5,point(1).x-10,point(1).y+5);
+				//fl_line(point(1).x-10,point(1).y+5,point(1).x,point(1).y);
+			//}	
+		//}
+		//else if (point(0).x < point(1).x) 
+		//{
+			//if (point(0).y < point(1).y)
+			//{
+				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y-10);
+				//fl_line(point(1).x-5,point(1).y-10,point(1).x-10,point(1).y-5);
+				//fl_line(point(1).x-10,point(1).y-5,point(1).x,point(1).y);
+			//}
+			//else 
+			//{
+				//fl_line(point(1).x,point(1).y,point(1).x-10,point(1).y+5);
+				//fl_line(point(1).x-10,point(1).y+5,point(1).x-5,point(1).y+10);
+				//fl_line(point(1).x-5,point(1).y+10,point(1).x,point(1).y);
+			//}
+		//} else if (point(0).x > point(1).x) 
+		//{
+			//if (point(0).y > point(1).y) 
+			//{
+				//fl_line(point(1).x,point(1).y,point(1).x+5,point(1).y+10);
+				//fl_line(point(1).x+5,point(1).y+10,point(1).x+10,point(1).y+5);
+				//fl_line(point(1).x+10,point(1).y+5,point(1).x,point(1).y);
+			//}
+			//else
+			//{
+				//fl_line(point(1).x,point(1).y,point(1).x+5,point(1).y-10);
+				//fl_line(point(1).x+5,point(1).y-10,point(1).x+10,point(1).y-5);
+				//fl_line(point(1).x+10,point(1).y-5,point(1).x,point(1).y);
+			//}		
+		//}
+	//}
+//}
 
 //------------------------------------------------------------------------------
 
@@ -138,7 +256,7 @@ void Polygon::add(Point p)
 {
     int np = number_of_points();
 
-    if (1<np) {    // check that thenew line isn't parallel to the previous one
+    if (1<np) {    // check that thenew line isn'Pt parallel to the previous one
         if (p==point(np-1)) error("polygon point equal to previous point");
         bool parallel;
         line_intersect(point(np-1),p,point(np-2),point(np-1),parallel);
@@ -197,6 +315,78 @@ void Closed_polyline::draw_lines() const
 
 //------------------------------------------------------------------------------
 
+void Striped_closed_polyline::fill_pattern()
+{
+    Point ymax = points[0]; // Find minimum and maximum points
+    Point ymin = points[0];
+    for (int i = 0; i < points.size(); i++) {
+        if (points[i].y > ymax.y) {
+            ymax = points[i];
+        }
+        if (points[i].y < ymin.y) {
+            ymin = points[i];
+        }
+    }
+    int delta = ymax.y - ymin.y;
+    int step_size = 5;
+    for (int i = 0; i < points.size() - 1; i++) {
+        int counter = 0;
+        for (int j = 0; j < delta; j += step_size) {
+            if (points[i].y <= j + ymin.y && points[i + 1].y >= j + ymin.y) {
+                Point temp = points[i + 1] - points[i];
+                double slope = (double)temp.y / (double)temp.x;
+                int x = (double)counter / slope;
+                inters.push_back(Point(x + points[i].x, ymin.y + j));
+                counter += step_size;
+            }
+            else if (points[i + 1].y <= j + ymin.y && points[i].y >= j + ymin.y) {
+                Point temp = points[i] - points[i + 1];
+                double slope = (double)temp.y / (double)temp.x;
+                int x = (double)counter / slope;
+                inters.push_back(Point(x + points[i + 1].x, ymin.y + j));
+                counter += step_size;
+            }
+        }
+    }
+    // insertion_sort according to y
+    int i, j;
+    for (i = 1; i < inters.size(); i++) {
+        j = i;
+        while ((j>0) && (inters[j].y < inters[j - 1].y)) {
+            swap(inters[j], inters[j - 1]);
+            j = j - 1;
+        }
+    }
+    for (int i = 0; i < inters.size() - 1; i++) {
+        if (inters[i].y == inters[i + 1].y) {
+            pattern.add(inters[i], inters[i + 1]);
+        }
+    }
+	//pattern.set_color(col);
+}
+
+//------------------------------------------------------------------------------
+
+void Striped_closed_polyline::draw_lines() const
+{
+    //if (fill_color().visibility()) {    // fill
+        //fl_color(fill_color().as_int());
+		pattern.draw();
+	//}
+    Closed_polyline::draw_lines();
+}
+
+//------------------------------------------------------------------------------
+
+Point Regular_polygon::getNextPoint(int i)
+{
+	int x = loc.x + R*cos((2*M_PI*i)/n);
+	int y = loc.y + R*sin((2*M_PI*i)/n);
+	return Point{x,y};
+}
+
+//------------------------------------------------------------------------------
+
 void draw_mark(Point xy, char c)
 {
     static const int dx = 4;
@@ -232,8 +422,26 @@ void Rectangle::draw_lines() const
 
 //------------------------------------------------------------------------------
 
+void Striped_rectangle::draw_lines() const 
+{
+    if (fill_color().visibility()) {    // fill lines
+        fl_color(fill_color().as_int());
+        fl_rect(point(0).x,point(0).y,w,h);
+		for(int i = 1; i < h; i+=2) 
+		{
+			fl_line(loc.x,loc.y+i,loc.x+w-1,loc.y+i);
+		}
+	}
+    if (color().visibility()) {    // lines on top of fill
+        fl_color(color().as_int());
+        fl_rect(point(0).x,point(0).y,w,h);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 Circle::Circle(Point p, int rr)    // center and radius
-:r(rr)
+	: loc(p), r(rr)
 {
     add(Point(p.x-r,p.y-r));       // store top-left corner
 }
@@ -247,11 +455,113 @@ Point Circle::center() const
 
 //------------------------------------------------------------------------------
 
-void Circle::draw_lines() const
+void Circle::draw_lines() const {
+	if (fill_color().visibility()) 
+	{
+        fl_color(fill_color().as_int());
+        fl_arc(point(0).x,point(0).y,r+r,r+r,0,360);
+	}
+    if (color().visibility()) fl_arc(point(0).x,point(0).y,r+r,r+r,0,360);
+}
+
+//------------------------------------------------------------------------------
+
+void Striped_circle::draw_lines() const
+{
+	if (fill_color().visibility()) {
+        fl_color(fill_color().as_int());
+		for(int i = 2; i < 180; i+=2) 
+		{
+			fl_line((loc.x+r*sin((i*M_PI)/180))-1,loc.y+r*cos((i*M_PI)/180),(loc.x+r*sin(((360-i)*M_PI)/180))+1,loc.y+r*cos(((360-i)*M_PI)/180));
+		}
+	}
+    if (color().visibility())
+		fl_color(color().as_int());
+        fl_arc(point(0).x,point(0).y,r+r,r+r,0,360);
+}
+
+//------------------------------------------------------------------------------
+
+void Smiley::draw_eyes() const
+{
+	fl_arc(center().x-r/3,center().y-r/3,2,2,0,360); // left eye
+	fl_arc(center().x+r/3,center().y-r/3,2,2,0,360); // right eye
+}
+//------------------------------------------------------------------------------
+
+void Smiley::draw_mouth() const
+{
+	fl_arc(point(0).x+r/2,point(0).y+r/2,r,r,195,345); // mouth
+}
+
+//------------------------------------------------------------------------------
+
+void Smiley::draw_lines() const
+{
+    if (color().visibility())
+        fl_arc(point(0).x,point(0).y,r+r,r+r,0,360); // Circle
+		draw_eyes();
+		draw_mouth();
+}
+
+//------------------------------------------------------------------------------
+
+void Frowny::draw_mouth() const
+{
+	fl_arc(point(0).x+r/2,point(0).y+r,r,r,15,165);
+}
+//------------------------------------------------------------------------------
+
+void Frowny::draw_lines() const
 {
     if (color().visibility())
         fl_arc(point(0).x,point(0).y,r+r,r+r,0,360);
+		draw_eyes();
+		draw_mouth();
 }
+
+//------------------------------------------------------------------------------
+
+void Smiley_hat::draw_hat() const 
+{
+	fl_line(n().x-r/2,n().y,n().x+r/2,n().y);
+	fl_line(n().x-r/4,n().y,n().x-r/3,n().y-r/3);
+	fl_line(n().x+r/4,n().y,n().x+r/3,n().y-r/3);
+	fl_line(n().x-r/3,n().y-r/3,n().x+r/3,n().y-r/3);
+}
+
+//------------------------------------------------------------------------------
+
+void Smiley_hat::draw_lines() const
+{
+    if (color().visibility())
+        fl_arc(point(0).x,point(0).y,r+r,r+r,0,360); // Circle
+		draw_eyes();
+		draw_mouth();
+		draw_hat();
+}
+
+//------------------------------------------------------------------------------
+
+void Frowny_hat::draw_hat() const 
+{
+	fl_line(n().x-r/2,n().y,n().x+r/2,n().y);
+	fl_line(n().x-r/3,n().y,n().x-r/4,n().y-r/3);
+	fl_line(n().x+r/3,n().y,n().x+r/4,n().y-r/3);
+	fl_line(n().x-r/4,n().y-r/3,n().x+r/4,n().y-r/3);
+}
+
+//------------------------------------------------------------------------------
+
+void Frowny_hat::draw_lines() const
+{
+    if (color().visibility())
+        fl_arc(point(0).x,point(0).y,r+r,r+r,0,360); // Circle
+		draw_eyes();
+		draw_mouth();
+		draw_hat();
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -259,6 +569,41 @@ void Ellipse::draw_lines() const
 {
     if (color().visibility())
         fl_arc(point(0).x,point(0).y,w+w,h+h,0,360);
+}
+
+//------------------------------------------------------------------------------
+
+void Arc::draw_lines() const
+{
+    if (color().visibility())
+        fl_arc(point(0).x,point(0).y,w+w,h+h,start,end);
+}
+//------------------------------------------------------------------------------
+
+void Box::draw_lines() const
+{
+	if (color().visibility())
+	{
+		//Lines
+		int r = d/2; // Radius
+		fl_line(point(0).x-r,point(0).y,point(1).x+r,point(1).y); // Top Line
+		fl_line(point(2).x+r,point(2).y-1,point(3).x-r,point(3).y-1); // Bottom
+		fl_line(point(1).x,point(1).y+r,point(2).x,point(2).y-r); // Left
+		fl_line(point(3).x-1,point(3).y-r,point(0).x-1,point(0).y+r); // Right
+
+		// Arcs
+		fl_arc(point(0).x-d,point(0).y,d,d,0,90); // Top right angle. 0,90 - angle for arc = 0 to 90 ...
+		fl_arc(point(1).x,point(1).y,d,d,90,180); // Top left 
+		fl_arc(point(2).x,point(2).y-d,d,d,180,270); // Bottom left
+		fl_arc(point(3).x-d,point(3).y-d,d,d,270,360); // Bottom right
+
+		// Text
+		int ofnt = fl_font();
+		int osz = fl_size();
+		fl_font(1,12);
+		fl_draw(lab.c_str(),west().x+20,west().y);
+		fl_font(ofnt,osz);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -347,6 +692,61 @@ void Axis::move(int dx, int dy)
 
 //------------------------------------------------------------------------------
 
+void Group::draw() const {
+	for(int i = 0; i < shapes.size(); ++i) shapes[i].draw();
+}
+
+//------------------------------------------------------------------------------
+
+void Group::move(int dx, int dy) {
+	for(int i = 0; i < shapes.size(); ++i) shapes[i].move(dx,dy);
+}
+
+//------------------------------------------------------------------------------
+
+void Group::set_color(Color col) {
+	for(int i = 0; i < shapes.size(); ++i)
+	{
+		Shape::set_color(col);
+		for(int i = 0; i < shapes.size(); ++i) shapes[i].set_color(col);
+	}
+}
+
+//------------------------------------------------------------------------------
+
+void Group::set_fill_color(Color col) {
+	for(int i = 0; i < shapes.size(); ++i)
+	{
+		Shape::set_fill_color(col);
+		for(int i = 0; i < shapes.size(); ++i) shapes[i].set_fill_color(col);
+	}
+}
+
+//------------------------------------------------------------------------------
+
+void Group::set_style(Line_style sty) {
+	for(int i = 0; i < shapes.size(); ++i)
+	{
+		Shape::set_style(sty);
+		for(int i = 0; i < shapes.size(); ++i) shapes[i].set_style(sty);
+	}
+}
+
+//------------------------------------------------------------------------------
+
+void Chess::draw() const {
+	for(int i = 0; i < board.size(); ++i) board[i].draw();
+	for(int i = 0; i < checkers.size(); ++i) checkers[i].draw();
+}
+
+//------------------------------------------------------------------------------
+
+Chess::Chess (Point xy, int i) :loc(xy), size(i) {
+	board.push_back(new Rectangle{loc,size,size});
+}
+
+//------------------------------------------------------------------------------
+
 Function::Function(Fct f, double r1, double r2, Point xy,
                    int count, double xscale, double yscale)
 // graph f(x) for x in [r1:r2) using count line segments with (0,0) displayed at xy
@@ -363,6 +763,7 @@ Function::Function(Fct f, double r1, double r2, Point xy,
 }
 
 //------------------------------------------------------------------------------
+
 
 ifstream can_open(const string& s)
 // check if a file named s exists and can be opened for reading
@@ -444,5 +845,189 @@ void Image::draw_lines() const
 
 //------------------------------------------------------------------------------
 
+void PseudoWindow::draw_lines() const {
+	Box bx{loc,w,h,radius};
+	Line lt{loc+Point{0,top_panel_size},loc+Point{w-1,top_panel_size}};
+	Point start_buttons{loc+Point{10,5}};
+	bx.draw();
+	lt.draw();
+	Vector_ref<Rectangle> buttons;
+	vector<Color> buttons_color {Color::red, Color::yellow, Color::green};
+	int buttons_size = 10;
+	int buttons_offset = 10;
+	for(int i = 0; i<3; ++i) 
+	{
+		buttons.push_back(new Rectangle{start_buttons+Point{i*(buttons_size+buttons_offset),0},buttons_size,buttons_size});
+		buttons[i].set_fill_color(buttons_color[i]);
+		buttons[i].draw();
+	}
+}
+
+//------------------------------------------------------------------------------
+
+void BinaryTree::draw_ribs() const
+{
+	for(int i = 0; i < nodes.size(); i++)
+	{
+		if(i>0)
+		{
+			Vector_ref<Shape> ribs;
+			Point start_point{nodes[i].n()};
+			Point end_point;
+			if(i%2 != 0) end_point = {nodes[i/2].s()};
+			else end_point = {nodes[(i/2)-1].s()};
+			switch(rib) {
+				case BinaryTree::arrow_up:
+				{
+					ribs.push_back(new Arrow(start_point,end_point));
+				break;
+				}  
+				case BinaryTree::arrow_down:
+				{
+					swap(start_point.x,end_point.x);
+					swap(start_point.y,end_point.y);
+					ribs.push_back(new Arrow(start_point,end_point));
+				break;
+				}  
+				default:
+				{
+					ribs.push_back(new Line(start_point,end_point));
+				break;
+				}
+			}
+			ribs[ribs.size()-1].set_color(ribs_color);
+			ribs[ribs.size()-1].draw();
+		}
+	}
+}
+//------------------------------------------------------------------------------
+
+int BinaryTree::step_left(const int& i)
+{
+	return i*2+1;
+}
+
+//------------------------------------------------------------------------------
+
+int BinaryTree::step_rigth(const int& i)
+{
+	return i*2+2;
+}
+//------------------------------------------------------------------------------
+
+void BinaryTree::add_text(string pos, string text)
+{
+	if (pos.size() > levels-1) error("Text label positions cannot  > levels-1");
+	int i = 0; 
+	for(char c : pos)
+	{
+		if (!(isspace(c))) 
+		{
+			switch(c)
+			{
+				case '0':
+					return labels[0].set_label(text);
+				break;
+				case 'l':
+					i = step_left(i);	
+				break;
+				case 'r':
+					i = step_rigth(i);	
+				break;
+				default: error("Text for oisitions of node must be l, r or 0");
+			}
+		} 
+		else continue;
+	}
+	labels[i].set_label(text);
+}
+//------------------------------------------------------------------------------
+
+void BinaryTree::build_tree()
+{
+	int y = interval;
+	int w = w_width/2;
+	int r = radius;
+	for(int i = 0; i < levels; ++i)
+	{
+		int x = w;
+		for(int j = 0; x < w_width-25; ++j)
+		{
+			if (j%2 == 0) 
+			{
+				nodes.push_back(new Circle(Point{x,y},r));
+			}
+			x+=w;
+		}
+		y+=interval;
+		y-=y/10; // -10% intervals per level
+		w/=2;
+		r-=(r*2)/10; // -20% radius per level
+	}
+}
+//------------------------------------------------------------------------------
+
+void BinaryTree::put_text()
+{
+	for(int i = 0; i < nodes.size(); ++i)
+	{
+		labels.push_back(new Text(nodes[i].center()+Point{-6,3},""));
+	}
+}
+//------------------------------------------------------------------------------
+
+void BinaryTree::draw_labels() const
+{
+	for(int i = 0; i < labels.size(); ++i)
+	{
+		labels[i].draw();
+	}
+}
+
+//------------------------------------------------------------------------------
+
+void BinaryTree::draw_lines() const {
+	for(int i = 0; i < nodes.size(); ++i)
+	{
+		nodes[i].draw();
+	}
+	if(nodes.size()>1) draw_ribs();
+	draw_labels();
+}
+//------------------------------------------------------------------------------
+
+void BinaryTreeT::draw_lines() const {
+	Vector_ref<Right_triangle> nodes;
+	Vector_ref<Line> ribs;
+	int y = interval;
+	int w = w_width/2;
+	int r = radius;
+	for(int i = 0; i < levels; ++i)
+	{
+		int x = w;
+		for(int j = 0; x < w_width-25; ++j)
+		{
+			if (j%2 == 0) 
+			{
+				nodes.push_back(new Right_triangle(Point{x,y},r,r));
+				nodes[nodes.size()-1].draw();
+				if(i>0) 
+				{
+					if((nodes.size()-1)%2 != 0)
+					{
+						ribs.push_back(new Line(nodes[nodes.size()-1].n(),nodes[(nodes.size()-1)/2].s()));
+					} else ribs.push_back(new Line(nodes[nodes.size()-1].n(),nodes[((nodes.size()-1)/2)-1].s()));
+					ribs[ribs.size()-1].draw();
+				}
+			}
+			x+=w;
+		}
+		y+=interval;
+		y-=y/10; // -10% intervals per level
+		w/=2;
+		r-=(r*2)/10; // -20% radius per level
+	}
+}
+//------------------------------------------------------------------------------
 } // of namespace Graph_lib
 

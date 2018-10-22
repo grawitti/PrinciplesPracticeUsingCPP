@@ -11,6 +11,8 @@
 #include <FL/Fl_Image.H>
 #include "Point.h"
 #include "std_lib_facilities.h"
+#include <math.h>
+#include <iostream>
 
 namespace Graph_lib {
 
@@ -48,7 +50,7 @@ struct Color {
     Color(Transparency vv) :c(Fl_Color()), v(vv) { }    // default color
 
     int as_int() const { return c; }
-
+public:
     char visibility() const { return v; } 
     void set_visibility(Transparency vv) { v=vv; }
 private:
@@ -163,7 +165,7 @@ protected:
     virtual void draw_lines() const;   // draw the appropriate lines
     void add(Point p);                 // add p to points
     void set_point(int i,Point p);     // points[i]=p;
-private:
+//private:
     vector<Point> points;              // not used by all shapes
     Color lcolor;                      // color for lines and characters
     Line_style ls; 
@@ -191,7 +193,7 @@ struct Line : Shape {            // a Line is a Shape defined by two Points
 
 struct Rectangle : Shape {
 
-    Rectangle(Point xy, int ww, int hh) : w(ww), h(hh)
+    Rectangle(Point xy, int ww, int hh) : loc(xy), w(ww), h(hh)
     {
         add(xy);
         if (h<=0 || w<=0) error("Bad rectangle: non-positive side");
@@ -199,6 +201,7 @@ struct Rectangle : Shape {
 
     Rectangle(Point x, Point y) : w(y.x-x.x), h(y.y-x.y)
     {
+		loc = x;
         add(x);
         if (h<=0 || w<=0) error("Bad rectangle: non-positive width or height");
     }
@@ -206,9 +209,27 @@ struct Rectangle : Shape {
 
     int height() const { return h; }
     int width() const { return w; }
-private:
+	Point n() const  { return loc+Point{w/2,0}; }
+	Point nw() const { return loc; }
+	Point ne() const  { return loc+Point{w,0}; }
+	Point west() const  { return loc+Point{0,h/2}; }
+	Point e() const  { return loc+Point{w,h/2}; }
+	Point sw() const  { return loc+Point{0,h}; }
+	Point s() const  { return loc+Point{w/2,h}; }
+	Point se() const  { return loc+Point{w,h}; }
+	Point center() const  { return loc+Point{w/2,h/2}; }
+protected:
+	Point loc;
     int h;    // height
     int w;    // width
+};
+
+//------------------------------------------------------------------------------
+
+struct Striped_rectangle : Rectangle {
+	Striped_rectangle(Point xy, int ww, int hh) : Rectangle{xy,ww,hh} {  }
+
+	void draw_lines() const;
 };
 
 //------------------------------------------------------------------------------
@@ -222,6 +243,67 @@ struct Open_polyline : Shape {         // open sequence of lines
 
 struct Closed_polyline : Open_polyline { // closed sequence of lines
     void draw_lines() const;
+};
+
+//------------------------------------------------------------------------------
+
+struct Regular_polygon : Closed_polyline { // closed sequence of lines
+	Regular_polygon(Point p, int rr, int nn) : loc{p}, R{rr}, n{nn} 
+	{
+		if(n < 3) error("Number of sides must be 3 or more.");
+		for(int i = 0; i < n; ++i)
+		{
+			add(getNextPoint(i));
+		}
+	}
+	Regular_polygon() {  }
+
+	Point getNextPoint(int i);
+
+	Point loc; // coordinate of polygon's center
+	int R; // Radius
+	int n{3}; // Namber of sides
+};
+
+//------------------------------------------------------------------------------
+
+struct Regular_hexagon : Regular_polygon { 
+	Regular_hexagon(Point p, int rr) : Regular_polygon{p, rr, 6} {  }
+};
+
+//------------------------------------------------------------------------------
+
+struct Octagon : Regular_polygon { 
+	Octagon(Point p, int rr) : Regular_polygon{p, rr, 8} {  }
+};
+
+//------------------------------------------------------------------------------
+
+Point rotate(const Point& p, Point center, int radius, int grad);
+
+struct Right_triangle : Closed_polyline {
+	Right_triangle(Point p, int hh, int ww) : loc{p}, h{hh}, w{ww} 
+	{
+		add(loc);
+		add(loc-Point{0,h});
+		add(loc+Point{w,0});
+	}
+
+	Right_triangle(Point p, int hh, int ww, int grd) : loc{p}, h{hh}, w{ww}, grad{grd} 
+	{
+		Point p1{rotate(loc-Point{0,h},loc,w,grad)};
+		Point p2{rotate(loc+Point{w,0},loc,h,grad+90)};
+		add(loc);
+		add(p1);
+		add(p2);
+	}
+
+	Point n() { return loc-Point{0,h}; }
+	Point s() { return loc+Point{w/2,0}; }
+	Point loc;
+	int h;
+	int w;
+	int grad;
 };
 
 //------------------------------------------------------------------------------
@@ -240,8 +322,24 @@ struct Lines : Shape {                 // related lines
 
 //------------------------------------------------------------------------------
 
+struct Arrow : Line {
+    Arrow(Point p1, Point p2) :Line(p1,p2) { }
+    void draw_lines() const;
+};
+
+//struct Arrow : Lines {                 // related lines
+	//Arrow(Point p1, Point p2) 
+	//{
+		//add(p1,p2);
+	//}
+    //void draw_lines() const;
+//};
+
+//------------------------------------------------------------------------------
+
 struct Text : Shape {
     // the point is the bottom left of the first letter
+	//Text() {}
     Text(Point x, const string& s) : lab(s), fnt(fl_font()), fnt_sz(fl_size()) { add(x); }
 
     void draw_lines() const;
@@ -254,6 +352,12 @@ struct Text : Shape {
 
     void set_font_size(int s) { fnt_sz = s; }
     int font_size() const { return fnt_sz; }
+	Text& operator=(const Text& right) 
+	{
+		point(0) = right.point(0);
+		lab = right.lab;
+		return *this;
+	}
 private:
     string lab;    // label
     Font fnt;
@@ -279,21 +383,91 @@ struct Axis : Shape {
 
 struct Circle : Shape {
     Circle(Point p, int rr);    // center and radius
+	Circle() {  }
 
     void draw_lines() const;
 
     Point center() const ; 
     int radius() const { return r; }
     void set_radius(int rr) { r=rr; }
-private:
+
+	Point c() { return loc; }
+	Point n() const { return loc-Point{0,r}; }
+	Point s() const { return loc+Point{0,r}; }
+	Point w() { return loc-Point{r,0}; }
+	Point e() { return loc+Point{r,0}; }
+
+protected:
+	Point loc;
     int r;
 };
 
 //------------------------------------------------------------------------------
 
+struct Striped_circle : Circle {
+	Striped_circle(Point p, int rr) : Circle{p,rr} {  }
+
+	void draw_lines() const;
+};
+
+//------------------------------------------------------------------------------
+
+struct Immobile_Circle : Circle {
+	Immobile_Circle(Point p, int r) : Circle{p,r} { 
+		add(Point(p.x-r,p.y-r));
+	}
+	void move(int dx, int dy) { error("Class Immobile_Circle objects cannot be moved."); }
+};
+
+//------------------------------------------------------------------------------
+
+struct Smiley : Circle {
+	Smiley(Point p, int r) : Circle{p, r} {
+		add(Point(p.x-r,p.y-r));
+	}
+	void draw_eyes() const;
+	void draw_mouth() const;
+	void draw_lines() const;
+};
+
+//------------------------------------------------------------------------------
+
+struct Frowny : Smiley {
+	Frowny(Point p, int r) : Smiley{p, r} {
+		add(Point(p.x-r,p.y-r));
+	}
+	void draw_mouth() const;
+	void draw_lines() const;
+};
+
+//------------------------------------------------------------------------------
+
+struct Smiley_hat : Smiley {
+	Smiley_hat(Point p, int r) : Smiley{p, r} 
+	{
+		add(Point(p.x-r,p.y-r));
+	}
+	void draw_hat() const;
+	void draw_lines() const;
+};
+
+//------------------------------------------------------------------------------
+
+struct Frowny_hat : Frowny {
+	Frowny_hat(Point p, int r) : Frowny{p, r} {
+		add(Point(p.x-r,p.y-r));
+	}
+	void draw_hat() const;
+	void draw_lines() const;
+};
+
+//------------------------------------------------------------------------------
+
+
 struct Ellipse : Shape {
+	Ellipse() {}
     Ellipse(Point p, int w, int h)    // center, min, and max distance from center
-        : w(w), h(h)
+        : loc(p), w(w), h(h)
     { 
         add(Point(p.x-w,p.y-h));
     }
@@ -308,9 +482,70 @@ struct Ellipse : Shape {
     int major() const { return w; }
     void set_minor(int hh) { h=hh; }
     int minor() const { return h; }
+
+	Point n() { return loc-Point{0,h}; }
+	Point west() { return loc-Point{w,0}; }
+	Point c() { return loc; }
+	Point e() { return loc+Point{w,0}; }
+	Point s() { return loc+Point{0,h}; }
 private:
+	Point loc;
     int w;
     int h;
+};
+
+//------------------------------------------------------------------------------
+
+struct Arc : Ellipse {
+	Arc(Point p, int w, int h, int s, int e)
+		: w(w), h(h), start(s), end(e)
+	{
+        add(Point(p.x-w,p.y-h));
+	}
+
+	void draw_lines() const;
+private:
+	int w;
+	int h;
+	int start;
+	int end;
+};
+
+//------------------------------------------------------------------------------
+
+struct Box : Shape {
+	Box() {}
+	Box(Point xy, int w, int h, int d)
+		: loc(xy), w(w), h(h), d(d) 
+		{
+			add(xy+Point{w,0}); // Top Right point
+			add(xy); // Top left
+			add(xy+Point{0,h}); // Bottom left
+			add(xy+Point{w,h}); // Bottom right
+		}
+	Box(Point xy, int w, int h, int d, string lab)
+		: loc(xy), w(w), h(h), d(d), lab(lab)
+		{
+			add(xy+Point{w,0}); // Top Right point
+			add(xy); // Top left
+			add(xy+Point{0,h}); // Bottom left
+			add(xy+Point{w,h}); // Bottom right
+		}
+	void draw_lines() const; 
+
+	Point nw() { return loc; }
+	Point n() const { return loc+Point{w/2,0}; }
+	Point s() { return loc+Point{w/2,h}; }
+	Point west() const { return loc+Point{0,h/2}; }
+	Point e() { return loc+Point{w,h/2}; }
+	Point center() const { return loc+Point{w/2,h/2}; }
+
+protected:
+	Point loc;
+	int w; // Width
+	int h; // Height
+	int d; // Circle diameter for angles
+	string lab;
 };
 
 //------------------------------------------------------------------------------
@@ -342,6 +577,64 @@ struct Mark : Marks {
 
 //------------------------------------------------------------------------------
 
+class Striped_closed_polyline : public Closed_polyline
+{
+public:
+    Striped_closed_polyline(vector<Point> pts)
+        :points(pts)
+    {
+        for (int i = 0; i < pts.size(); i++) {
+            Closed_polyline::add(pts[i]);
+        }
+        points.push_back(pts[0]);
+		fill_pattern();
+		//set_fill_color();
+    }
+	void fill_pattern();
+	//void set_fill_color();
+    void draw_lines() const;
+
+    vector<Point> inters;
+    Lines pattern;
+private:
+    Point a;
+    int r;
+    vector<Point> points;
+};
+
+//------------------------------------------------------------------------------
+
+struct Group : Shape {
+	void shape_add(Shape& s) { shapes.push_back(s); }
+	
+	void draw() const;
+	void move(int dx, int dy);
+	void set_color(Color col);
+	void set_style(Line_style sty);
+	void set_fill_color(Color col);
+
+protected:
+	Vector_ref<Shape> shapes;
+	using Shape::number_of_points;
+	using Shape::points;
+	using Shape::add;
+	using Shape::set_point;
+};
+
+//------------------------------------------------------------------------------
+
+struct Chess : Group {
+	Chess(Point xy, int i);
+	void draw() const;
+protected:
+	Point loc;
+	int size;
+	Vector_ref<Shape> board;
+	Vector_ref<Shape> checkers;
+};
+
+//------------------------------------------------------------------------------
+
 struct Suffix {
     enum Encoding { none, jpg, gif  };
 };
@@ -369,8 +662,63 @@ struct Bad_image : Fl_Image {
     void draw(int x,int y, int, int, int, int) { draw_empty(x,y); }
 };
 
+
+//------------------------------------------------------------------------------
+class PseudoWindow : public Shape {
+public:
+PseudoWindow(Point xy, int hh, int ww, string m) :loc(xy), h(hh), w(ww), mark(m) {  }
+
+Point center() { return loc+Point{w/2,h/2}; }
+
+void draw_lines() const;
+
+private:
+Point loc;
+int h;
+int w;
+string mark;
+int radius{20};
+int top_panel_size{20};
+};
+
 //------------------------------------------------------------------------------
 
+struct BinaryTree : public Shape {
+public:
+	enum Ribs {arrow_down, arrow_up, line};
+	BinaryTree(int w, int l, Ribs rr = BinaryTree::line, Color r_col = Color::black) :w_width(w), levels(l), rib(rr), ribs_color(r_col)
+	{
+		if(levels > 8 || levels < 0) error("levels could not be > 8 and < 0");
+		build_tree();
+		put_text();
+	}		
+
+	int step_left(const int& i);
+	int step_rigth(const int& i);
+	void add_text(string pos, string text);
+	void build_tree();
+	void put_text();
+	void draw_labels() const;
+	void draw_ribs() const;
+	void draw_lines() const;
+protected:
+	Vector_ref<Circle> nodes;
+	Vector_ref<Text> labels;
+	Ribs rib;
+	Color ribs_color;
+	int w_width;
+	int radius{20};
+	int interval{radius*2+20};
+	int levels;
+};
+
+//------------------------------------------------------------------------------
+
+struct BinaryTreeT : public BinaryTree {
+	BinaryTreeT(int w, int l) : BinaryTree::BinaryTree(w,l) {}
+	void draw_lines() const;
+};
+//------------------------------------------------------------------------------
 } // of namespace Graph_lib
 
 #endif
