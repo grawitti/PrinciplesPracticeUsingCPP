@@ -183,22 +183,30 @@ struct Function : Shape {
         int count = 100, double xscale = 25, double yscale = 25);
 };
 //------------------------------------------------------------------------------
-/*
-struct Function_arg : Shape {
-    // the function parameters are not stored
-    Function_arg(Fct ff, double rr1, double rr2, Point o,
-        int c = 100, double xs = 25, double ys = 25)
-    :f(ff), r1(rr1), r2(rr2), orig(o), count(c), xscale(xs), yscale(ys);
+
+struct Fct_stored : Function {
+public:
+	Fct_stored(Fct ff, double rr1, double rr2, Point o, int c = 100, double xs = 25, double ys = 25, double p = 1) 
+	: f(ff), r1(rr1), r2(rr2), xy(o), count(c), xscale(xs), yscale(ys), precisions(p), Function{ff,rr1,rr2,o,c,xs,ys} {  }
+
+	double last_r1() { return r1; }
+	double last_r2() { return r2; }
+	Point last_xy() { return xy; }
+	int last_count() { return count; }
+	double last_xscale() { return xscale; }
+	double last_yscale() { return yscale; }
+	Fct* last_fct() { return f; }
+
 private:
-    Fct f;
+	Fct* f;
     double r1;
     double r2;
     Point xy;
     int count;
     double xscale;
     double yscale;
+	double precisions;
 };
-*/
 //------------------------------------------------------------------------------
 
 struct Line : Shape {            // a Line is a Shape defined by two Points

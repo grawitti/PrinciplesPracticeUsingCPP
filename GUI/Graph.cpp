@@ -141,76 +141,6 @@ void Arrow::draw_lines() const
         fl_end_complex_polygon();
     }
 }
-
-// draw lines connecting pairs of points
-//void Arrow::draw_lines() const
-//{
-    //if (color().visibility())
-	//{
-		//fl_line(point(0).x,point(0).y,point(1).x,point(1).y);
-		//if(point(0).x == point(1).x && point(0).y == point(1).y) error("Point p1 = point p2");
-		//if(point(0).x == point(1).x)
-		//{
-			//if(point(0).y > point(1).y)
-			//{
-				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y+10);
-				//fl_line(point(1).x-5,point(1).y+10,point(1).x+5,point(1).y+10);
-				//fl_line(point(1).x+5,point(1).y+10,point(1).x,point(1).y);
-			//}
-			   //else
-			   //{
-				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y-10);
-				//fl_line(point(1).x-5,point(1).y-10,point(1).x+5,point(1).y-10);
-				//fl_line(point(1).x+5,point(1).y-10,point(1).x,point(1).y);
-			//}
-		//}
-		//else if (point(0).y == point(1).y)
-		//{
-			//if(point(0).x > point(1).x)
-			//{
-				//fl_line(point(1).x,point(1).y,point(1).x+10,point(1).y-5);
-				//fl_line(point(1).x+10,point(1).y-5,point(1).x+10,point(1).y+5);
-				//fl_line(point(1).x+10,point(1).y+5,point(1).x,point(1).y);
-			//}
-			   //else
-			   //{
-				//fl_line(point(1).x,point(1).y,point(1).x-10,point(1).y-5);
-				//fl_line(point(1).x-10,point(1).y-5,point(1).x-10,point(1).y+5);
-				//fl_line(point(1).x-10,point(1).y+5,point(1).x,point(1).y);
-			//}
-		//}
-		//else if (point(0).x < point(1).x)
-		//{
-			//if (point(0).y < point(1).y)
-			//{
-				//fl_line(point(1).x,point(1).y,point(1).x-5,point(1).y-10);
-				//fl_line(point(1).x-5,point(1).y-10,point(1).x-10,point(1).y-5);
-				//fl_line(point(1).x-10,point(1).y-5,point(1).x,point(1).y);
-			//}
-			//else
-			//{
-				//fl_line(point(1).x,point(1).y,point(1).x-10,point(1).y+5);
-				//fl_line(point(1).x-10,point(1).y+5,point(1).x-5,point(1).y+10);
-				//fl_line(point(1).x-5,point(1).y+10,point(1).x,point(1).y);
-			//}
-		//} else if (point(0).x > point(1).x)
-		//{
-			//if (point(0).y > point(1).y)
-			//{
-				//fl_line(point(1).x,point(1).y,point(1).x+5,point(1).y+10);
-				//fl_line(point(1).x+5,point(1).y+10,point(1).x+10,point(1).y+5);
-				//fl_line(point(1).x+10,point(1).y+5,point(1).x,point(1).y);
-			//}
-			//else
-			//{
-				//fl_line(point(1).x,point(1).y,point(1).x+5,point(1).y-10);
-				//fl_line(point(1).x+5,point(1).y-10,point(1).x+10,point(1).y-5);
-				//fl_line(point(1).x+10,point(1).y-5,point(1).x,point(1).y);
-			//}
-		//}
-	//}
-//}
-
 //------------------------------------------------------------------------------
 
 // does two lines (p1,p2) and (p3,p4) intersect?
@@ -761,24 +691,7 @@ Function::Function(Fct f, double r1, double r2, Point xy,
         r += dist;
     }
 }
-    //------------------------------------------------------------------------------
-/*
-Function_arg::Function_arg(Fct ff, double rr1, double rr2, Point o,
-                       int c, double xs, double ys)
-    // graph f(x) for x in [r1:r2) using count line segments with (0,0) displayed at xy
-    // x coordinates are scaled by xscale and y coordinates scaled by yscale
-    {
-        if (r2-r1<=0) error("bad graphing range");
-        if (count <=0) error("non-positive graphing count");
-        double dist = (r2-r1)/count;
-        double r = r1;
-        for (int i = 0; i<count; ++i) {
-            add(Point(xy.x+int(r*xscale),xy.y-int(f(r)*yscale)));
-            r += dist;
-        }
-}
 //------------------------------------------------------------------------------
-*/
 
 ifstream can_open(const string& s)
 // check if a file named s exists and can be opened for reading

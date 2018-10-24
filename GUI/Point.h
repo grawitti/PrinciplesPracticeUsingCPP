@@ -18,7 +18,7 @@ struct Point {
 
 //------------------------------------------------------------------------------
 
-//inline std::ostream& operator<<(std::ostream& os, Point p) { return os << p.x << ", " << p.y; }
+inline std::ostream& operator<<(std::ostream& os, Point p) { return os << p.x << ", " << p.y; }
 
 //------------------------------------------------------------------------------
 
