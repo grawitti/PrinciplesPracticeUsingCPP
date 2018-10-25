@@ -24,32 +24,38 @@ int main()
 		Point t1(0,0);
 		Simple_window win(t1,x_max()/2,y_max()/2,"Гл. 15, упр. 2 Fct_stored.");
 
-		Point center{x_max()/4,y_max()/4};
+		constexpr int xmax = 600;
+		constexpr int ymax = 400;
+		constexpr int xoffset = 100;
+		constexpr int yoffset = 100;
+		constexpr int xspace = 50;
+		constexpr int yspace = 50;
+		constexpr int xlength = xmax-xoffset-xspace;
+		constexpr int ylength = ymax-yoffset-yspace;
 
-		Axis ax(Axis::x,center-Point{250,0},500,20,"X");
+		Axis ax(Axis::x,Point{xoffset,ymax-yoffset},xlength,20,"X");
 		ax.set_color(Color::black);
 		win.attach(ax);
 
-		Axis ay(Axis::y,center-Point{250,0},500,20,"Y");
+		Axis ay(Axis::y,Point{xoffset,ymax-yoffset},ylength,20,"Y");
 		ay.set_color(Color::black);
 		win.attach(ay);
 
-		Fct_stored f_cos(cos,-10,10,center);
+		Fct_stored f_cos(cos,0,20,Point{xoffset,ymax-yoffset});
 		f_cos.set_color(Color::green);
 		win.attach(f_cos);
 
-		Fct_stored f_sin(sin,-10,10,center);
+		Fct_stored f_sin(sin,0,20,Point{xoffset,ymax-yoffset});
 		f_sin.set_color(Color::blue);
 		win.attach(f_sin);
 
-		Fct_stored f_sinxcosx(sinxcosx,-10,10,center);
+		Fct_stored f_sinxcosx(sinxcosx,0,20,Point{xoffset,ymax-yoffset});
 		f_sinxcosx.set_color(Color::red);
 		win.attach(f_sinxcosx);
 
-		Fct_stored f_func_2(function_2,-10,10,center);
+		Fct_stored f_func_2(function_2,0,20,Point{xoffset,ymax-yoffset});
 		f_func_2.set_color(Color::yellow);
 		win.attach(f_func_2);
-
 
 		cout << "Last arguments for Fct_stored f_cos:\n" 
 			<< "last r1:\t" << f_cos.last_r1() << endl
