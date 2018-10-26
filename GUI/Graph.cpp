@@ -957,5 +957,55 @@ void BinaryTreeT::draw_lines() const {
 	}
 }
 //------------------------------------------------------------------------------
-} // of namespace Graph_lib
 
+void Gistogram::add_col(double v, string l)
+{
+	cols_value.push_back(v);
+	cols_label.push_back(l);
+	col_w = (xlength/cols_value.size())/3;
+	offset = col_w;
+	Fl::redraw();
+}
+//------------------------------------------------------------------------------
+
+void Gistogram::draw_lines() const
+{
+	Axis x(Axis::x,xy,xlength,0,x_label);
+	x.set_color(Color::black);
+	x.label.move(xlength-offset,-20);
+	x.draw();
+
+	Axis y(Axis::y,xy,ylength,0,y_label);
+	y.set_color(Color::black);
+	y.draw();
+
+	Text t_label(xy+Point{xlength/2,-ylength-20},label);
+	t_label.set_color(color_labels);
+	t_label.draw();
+
+	Vector_ref<Rectangle> cols_temp;
+	Vector_ref<Text> cols_label_temp;
+	Vector_ref<Text> cols_value_temp;
+	for(int i = 0; i < cols_value.size(); ++i)
+	{
+		//
+		Point next_point{xy+Point{(col_w*i)+(offset*(i+1)),int(-cols_value[i])}};
+		cols_temp.push_back(new Rectangle{next_point,col_w,int(cols_value[i])});
+		cols_temp[cols_temp.size()-1].set_color(Color::black);
+		cols_temp[cols_temp.size()-1].set_fill_color(color_columns);
+		cols_temp[cols_temp.size()-1].draw();
+
+		cols_label_temp.push_back(new Text(next_point+Point{0,int(cols_value[i]+20)},cols_label[i]));
+		cols_label_temp[cols_label_temp.size()-1].set_color(color_labels);
+		cols_label_temp[cols_label_temp.size()-1].draw();
+
+		ostringstream ss;
+		ss << cols_value[i];
+		cols_value_temp.push_back(new Text(next_point+Point{0,-20},ss.str()));
+		cols_value_temp[cols_value_temp.size()-1].set_color(color_values);
+		cols_value_temp[cols_value_temp.size()-1].draw();
+	}
+}
+
+//------------------------------------------------------------------------------
+} // of namespace Graph_lib

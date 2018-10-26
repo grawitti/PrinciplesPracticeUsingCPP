@@ -743,6 +743,40 @@ struct BinaryTreeT : public BinaryTree {
 	void draw_lines() const;
 };
 //------------------------------------------------------------------------------
+
+struct Gistogram : public Shape
+{
+public:
+	Gistogram(Point p, int xl, int yl, string l)
+	: xy(p), xlength(xl), ylength(yl), label(l)	
+	{
+		if (xlength < 0 || ylength < 0) error("xlength and ylength must be > 0.");
+		if (xy.x < 0 || xy.y < 0) error("Point xy must be > 0.");
+	}
+	void add_col(double v, string l);
+	void set_x_label(string l) { x_label=l; }
+	void set_y_label(string l) { y_label=l; }
+	void set_color_labels(Color c) { color_labels=c; }
+	void set_color_values(Color c) { color_values=c; }
+	void set_color_columns(Color c) { color_columns=c; }
+	void draw_lines() const;
+private:
+	Point xy;
+	int xlength;
+	int ylength;
+	string label;
+	vector<double> cols_value;
+	vector<string> cols_label;
+	int col_w;
+	int offset;
+	string x_label{""};
+	string y_label{""};
+	Color color_labels{Color::black};
+	Color color_values{Color::red};
+	Color color_columns{Color::blue};
+};
+
+//------------------------------------------------------------------------------
 } // of namespace Graph_lib
 
 #endif
