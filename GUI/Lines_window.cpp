@@ -7,8 +7,10 @@ quit_button {Point{x_max()-70,0}, 70, 20, "Quit",cb_quit},
 next_x{Point{x_max()-310,0},50,20,"next x:"},
 next_y{Point{x_max()-210,0},50,20,"next y:"},
 xy_out{Point{100,0},100,20,"current (x,y):"},
-color_menu{Point{x_max()-70,30}, 70, 20, Menu::vertical, "color"},
-menu_button{Point{x_max()-80,30}, 80, 20, "color menu",cb_menu}
+color_menu{Point{x_max()-70,30}, 70, 20, Menu::vertical, "Color"},
+menu_button{Point{x_max()-80,30}, 80, 20, "Color",cb_menu},
+lstyle_menu{Point{x_max()-70,100}, 70, 20, Menu::vertical, "Line style"},
+lstyle_button{Point{x_max()-80,100}, 80, 20, "Line style",cb_ls_menu}
 {
     attach(next_button);
     attach(quit_button);
@@ -16,12 +18,23 @@ menu_button{Point{x_max()-80,30}, 80, 20, "color menu",cb_menu}
     attach(next_y);
     attach(xy_out);
     xy_out.put("no points");
+    
+    //color
     color_menu.attach(new Button{Point{0,0},0,0,"red",cb_red});
     color_menu.attach(new Button{Point{0,0},0,0,"blue",cb_blue});
     color_menu.attach(new Button{Point{0,0},0,0,"black",cb_black});
     attach(color_menu);
     color_menu.hide();
     attach(menu_button);
+    
+    //line style
+    lstyle_menu.attach(new Button{Point{0,0},0,0,"dash",cb_dash});
+    lstyle_menu.attach(new Button{Point{0,0},0,0,"dot",cb_dot});
+    lstyle_menu.attach(new Button{Point{0,0},0,0,"solid",cb_solid});
+    attach(lstyle_menu);
+    lstyle_menu.hide();
+    attach(lstyle_button);
+
     lines.set_color(Color::black);
     attach(lines);
 }
@@ -43,14 +56,19 @@ void Lines_window::next()
 
     redraw();
 }
-void Lines_window::cb_next(Address, Address pw) {reference_to<Lines_window>(pw).next();}
 
-void Lines_window::cb_quit(Address, Address pw) {reference_to<Lines_window>(pw).quit();}
-
+//Color menu callbacks
 void Lines_window::cb_red(Address, Address pw) {reference_to<Lines_window>(pw).red_pressed();}
-
 void Lines_window::cb_blue(Address, Address pw) {reference_to<Lines_window>(pw).blue_pressed();}
-
 void Lines_window::cb_black(Address, Address pw) {reference_to<Lines_window>(pw).black_pressed();}
-
 void Lines_window::cb_menu(Address, Address pw) {reference_to<Lines_window>(pw).menu_pressed();}
+
+//Linestyle menu callbacks
+void Lines_window::cb_dash(Address, Address pw) {reference_to<Lines_window>(pw).dash_pressed();}
+void Lines_window::cb_dot(Address, Address pw) {reference_to<Lines_window>(pw).dot_pressed();}
+void Lines_window::cb_solid(Address, Address pw) {reference_to<Lines_window>(pw).solid_pressed();}
+void Lines_window::cb_ls_menu(Address, Address pw) {reference_to<Lines_window>(pw).ls_menu_pressed();}
+
+//Other buttons callbacks
+void Lines_window::cb_next(Address, Address pw) {reference_to<Lines_window>(pw).next();}
+void Lines_window::cb_quit(Address, Address pw) {reference_to<Lines_window>(pw).quit();}
