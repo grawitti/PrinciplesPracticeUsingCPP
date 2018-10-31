@@ -668,6 +668,7 @@ Suffix::Encoding get_encoding(const string& s);
 //------------------------------------------------------------------------------
 
 struct Image : Shape {
+public:
     Image(Point xy, string file_name, Suffix::Encoding e = Suffix::none);
     ~Image() { delete p; }
     void draw_lines() const;

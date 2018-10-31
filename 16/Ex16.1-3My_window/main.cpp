@@ -2,7 +2,7 @@
      Date: 31.10.18
      Author: Grawitti
      Chapter 16 – Principles and Practice Using C++   
-     Exerciese 1
+     Exerciese 1-4
 */
 #include"../../GUI/GUI.h"
 #include"../../GUI/My_window.h"

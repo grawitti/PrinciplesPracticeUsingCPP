@@ -12,6 +12,7 @@ My_window::My_window(Point xy, int w, int h, const string &title)
         attach(buttons[i]);
     }
     
+    attach(smile);
     attach(next_button);
     attach(quit_button);
 }
@@ -47,4 +48,4 @@ void My_window::create_buttons()
 //Other buttons callbacks
 void My_window::cb_next(Address, Address pw) { reference_to<My_window>(pw).next(); }
 void My_window::cb_quit(Address, Address pw) { reference_to<My_window>(pw).quit(); }
-void My_window::cb_button(Address, Address pw) { reference_to<My_window>(pw).button_pressed(); }
+void My_window::cb_button(Address, Address pw) {reference_to<My_window>(pw).button_pressed();}
