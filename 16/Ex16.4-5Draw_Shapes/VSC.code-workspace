@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"exception": "cpp",
+			"locale": "cpp",
+			"ostream": "cpp",
+			"__bit_reference": "cpp",
+			"__string": "cpp",
+			"algorithm": "cpp",
+			"ios": "cpp",
+			"memory": "cpp",
+			"type_traits": "cpp",
+			"iterator": "cpp",
+			"random": "cpp"
+		}
+	}
+}
