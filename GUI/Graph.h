@@ -155,6 +155,7 @@ public:
     Line_style style() const { return ls; }
     void set_fill_color(Color col) { fcolor = col; }
     Color fill_color() const { return fcolor; }
+	void set_point(int i,Point p);     // points[i]=p;
 
     Point point(int i) const { return points[i]; } // read only access to points
     int number_of_points() const { return int(points.size()); }
@@ -164,7 +165,7 @@ protected:
     Shape();
     virtual void draw_lines() const;   // draw the appropriate lines
     void add(Point p);                 // add p to points
-    void set_point(int i,Point p);     // points[i]=p;
+    
 //private:
     vector<Point> points;              // not used by all shapes
     Color lcolor;                      // color for lines and characters
@@ -410,7 +411,6 @@ struct Circle : Shape {
 	Circle() {  }
 
     void draw_lines() const;
-
     Point center() const ;
     int radius() const { return r; }
     void set_radius(int rr) { r=rr; }
@@ -424,6 +424,29 @@ struct Circle : Shape {
 protected:
 	Point loc;
     int r;
+};
+
+//------------------------------------------------------------------------------
+
+struct Clock : public Shape {
+public:
+    Clock(Point p, int s): xy(p), size(s) 
+	{
+		get_system_time();
+		create_lines();
+	}
+	void draw_lines() const;
+	void get_system_time();
+	void create_lines();
+	void update_lines();
+
+private:
+    Point xy;
+    int size;
+	int hh;
+	int mm;
+	int ss;
+	Vector_ref<Line> arrows;
 };
 
 //------------------------------------------------------------------------------

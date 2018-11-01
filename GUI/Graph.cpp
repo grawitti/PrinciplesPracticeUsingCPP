@@ -395,6 +395,66 @@ void Circle::draw_lines() const {
 }
 
 //------------------------------------------------------------------------------
+void Clock::draw_lines() const {
+    Circle c{xy,size};
+    c.set_color(Color::black);
+    c.draw();
+
+    Text t12{c.n()-Point{10,5},"12"};
+    t12.set_color(Color::black);
+    t12.draw();
+
+    Text t3{c.e()+Point{3,5},"3"};
+    t3.set_color(Color::black);
+    t3.draw();
+
+    Text t6{c.s()+Point{-3,10},"6"};
+    t6.set_color(Color::black);
+    t6.draw();
+
+    Text t9{c.w()+Point{-10,5},"9"};
+    t9.set_color(Color::black);
+    t9.draw();
+
+    for(int i = 0; i < arrows.size(); ++i)
+    {
+        arrows[i].draw();
+    }
+}
+//------------------------------------------------------------------------------
+
+void Clock::get_system_time() {
+    time_t t = time(0);
+    struct tm* now = localtime(&t);
+    hh = now->tm_hour % 12;
+    mm = now->tm_min;
+    ss = now->tm_sec;
+}
+
+//------------------------------------------------------------------------------
+void Clock::create_lines()
+{
+    arrows.push_back(new Line(xy,Point{rotate(xy,xy,-size,-6*ss)}));
+    arrows[0].set_color(Color::red);
+    arrows[0].set_style(Line_style(Line_style::solid,1));
+    arrows.push_back(new Line(xy,Point{rotate(xy,xy,-size+0.8*size,-6*mm)}));
+    arrows[1].set_color(Color::blue);
+    arrows[1].set_style(Line_style(Line_style::solid,2));
+    arrows.push_back(new Line(xy,Point{rotate(xy,xy,-size+0.5*size,-30*hh)}));
+    arrows[2].set_color(Color::black);
+    arrows[2].set_style(Line_style(Line_style::solid,4));
+}
+//------------------------------------------------------------------------------
+
+void Clock::update_lines()
+{
+    arrows[0].set_point(1,Point{rotate(xy,xy,-size,-6*ss)});
+    arrows[1].set_point(1,Point{rotate(xy,xy,-size+10,-6*mm)});
+    arrows[2].set_point(1,Point{rotate(xy,xy,-size+20,-30*hh)});
+}
+
+//------------------------------------------------------------------------------
+
 
 void Striped_circle::draw_lines() const
 {
