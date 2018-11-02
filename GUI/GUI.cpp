@@ -33,6 +33,16 @@ int In_box::get_int()
 
 //------------------------------------------------------------------------------
 
+double In_box::get_double()
+{
+    Fl_Input& pi = reference_to<Fl_Input>(pw);
+    // return atoi(pi.value());
+    const char* p = pi.value();
+    if (!isdigit(p[0])) return -999999;
+    return atoi(p);
+}
+//------------------------------------------------------------------------------
+
 void In_box::attach(Window& win)
 {
     pw = new Fl_Input(loc.x, loc.y, width, height, label.c_str());
