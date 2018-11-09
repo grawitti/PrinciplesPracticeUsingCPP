@@ -6,7 +6,7 @@
         {
             "label": "Build FLTK",
             "type": "shell",
-            "command": "make clean; make",
+            "command": "make clean; make; fltk-config --post main",
             "problemMatcher": [
                 "$gcc"
             ],
