@@ -2,7 +2,7 @@
      Date: 12.11.18
      Author: Grawitti
      Chapter 17 – Principles and Practice Using C++   
-     Exercise 10
+     Exercise 13
 */
 
 #include "../../std_lib_facilities.h"
