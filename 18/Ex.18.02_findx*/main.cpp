@@ -35,7 +35,7 @@ char* findx(const char* s, const char* x)
 		{
 			while(*x)
 			{
-				if(*(x+1)==0) result = strdup(s)-j;
+				if(*(x+1)==0) result = strdup(s-j);
 				if(*s == *x)
 				{
 					s++;
@@ -50,11 +50,12 @@ char* findx(const char* s, const char* x)
 		}
 		s++;
 	}
-	return result-j;
+	return result ? result : nullptr;
 }
 
 void print_char_array(ostream& os, const char* s)
 {
+	if(!s) error ("s == null.");
 	for (int i = 0; s[i]!=0; ++i) os << s[i];
 	os << endl;
 }
