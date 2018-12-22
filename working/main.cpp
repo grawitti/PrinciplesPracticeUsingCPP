@@ -1,50 +1,47 @@
 /*
-    Date: 03.12.18
+    Date: 21.12.18
     Author: Grawitti
 	Description: 
-    Chapter 18 – Principles and Practice Using C++   
-	Exercise 12 - Vumpus
+    Chapter 19 – Principles and Practice Using C++   
+	Task - 1-10
 */
 
-#include "Game_logic.h"
+#include "../../std_lib_facilities.h"
 
 using namespace std;
+
+template<typename T> struct S {
+	public:
+		S(T v) :val(v) {}
+		T& get(T& val);
+	private:
+		T val;
+};
+
+template<typename T> T& S::get(T& val) {
+	return val;
+}
 
 int main()
 {
 	try
 	{	
-		const int min = 7;	// set minimum rooms
-		const int max = 15;	// set maximum rooms
-		const int rooms_n = random_int(min,max);	// set rooms amount
+		S<int> si{12};
+		S<char> sc{'c'};
+		S<double> sd{2.3};
+		S<string> ss{"string"};
+		S<vector<int>> svi{{1,2,3}};
 
-		SL_list sl;
-        for(int i=0; i<rooms_n; ++i) { sl.push_back(new Link(i)); }
-		set_rooms_refs(sl,rooms_n-1);
-		set_wump_bat_hole(sl,1,rooms_n-1);
+		cout << get(si.val) << endl
+			<< sc.val << endl
+			<< sd.val << endl
+			<< ss.val << endl;
 
-		cout << "Охота на Вампуса.\n";
-		help();
+		for(int i : svi.val) cout << i << ' ';
+		cout << endl;
 
-		// sl.print_list(); // Debug info
+		cout << get(si.val) << endl;
 
-		Game_status game{sl,sl.first()};
-
-		while(game.status == 'c') 
-		{
-			check_game_status(game);
-			if(game.status != 'o') {
-				room_info(game.current_room);
-				game.current_room = step(game);
-				check_game_status(game);
-			}
-			if(!check_wumpus_life(game.sl)) {
-				print_wumpus_killed();
-				game.status = 'w';
-			}
-		}
-		if(game.status == 'o') cout << "Игра окончена :(\n";
-		if(game.status == 'w') cout << "Победа! ;)\n";
 		return 0;
 	}
 	catch (const exception &e)
