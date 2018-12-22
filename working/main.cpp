@@ -13,14 +13,11 @@ using namespace std;
 template<typename T> struct S {
 	public:
 		S(T v) :val(v) {}
-		T& get(T& val);
+		T& get() { return val; }
 	private:
 		T val;
 };
 
-template<typename T> T& S::get(T& val) {
-	return val;
-}
 
 int main()
 {
@@ -32,15 +29,15 @@ int main()
 		S<string> ss{"string"};
 		S<vector<int>> svi{{1,2,3}};
 
-		cout << get(si.val) << endl
-			<< sc.val << endl
-			<< sd.val << endl
-			<< ss.val << endl;
+		cout << si.get() << endl
+			<< sc.get() << endl
+			<< sd.get() << endl
+			<< ss.get() << endl;
 
-		for(int i : svi.val) cout << i << ' ';
+		for(int i : svi.get()) cout << i << ' ';
 		cout << endl;
 
-		cout << get(si.val) << endl;
+		cout << si.get() << endl;
 
 		return 0;
 	}
