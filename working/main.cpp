@@ -3,30 +3,31 @@
     Author: Grawitti
 	Description: 
     Chapter 19 – Principles and Practice Using C++   
-	Exercise - 5
+	Exercise - 6
 */
 
 #include "../../std_lib_facilities.h"
 
 using namespace std;
 
-class Int
+template<typename T>
+class Number
 {
   public:
-	Int(){}
-	Int(int i) : value(i) {}
+	Number(){}
+	Number(T i) : value(i) {}
 
-	const Int& operator+(const Int& i) { return this->value+i.value; }
-	const Int& operator-(const Int& i) { return this->value-i.value; }
-	const Int& operator*(const Int& i) { return this->value*i.value; }
-	friend ostream& operator<<(ostream& os, const Int& i){
+	const T& operator+(const T& i) { return this->value+i.value; }
+	const T& operator-(const T& i) { return this->value-i.value; }
+	const T& operator*(const T& i) { return this->value*i.value; }
+	friend ostream& operator<<(ostream& os, const T& i){
 		return os << i.value;
 	}
-	friend istream& operator>>(istream& is, Int& i){
+	friend istream& operator>>(istream& is, T& i){
 		return is >> i.value;
 	}
   private:
-	int value;
+	T value;
 };
 
 int
@@ -34,8 +35,8 @@ main()
 {
 	try
 	{
-		Int a;
-		Int b;
+		Number<int> a;
+		Number<int> b;
 		cout << "Введите a: ";
 		cin >> a;
 		if(!cin) error("Data format");
