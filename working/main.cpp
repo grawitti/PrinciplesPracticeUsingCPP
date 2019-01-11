@@ -1,5 +1,5 @@
 /*
-    Date: 26.12.18
+    Date: 11.01.18
     Author: Grawitti
 	Description: 
     Chapter 19 – Principles and Practice Using C++   
@@ -17,9 +17,12 @@ class Number
 	Number(){}
 	Number(T i) : value(i) {}
 
-	const Number& operator+(const Number& n) { return this->value+n.value; }
-	const Number& operator-(const Number& n) { return this->value-n.value; }
-	const Number& operator*(const Number& n) { return this->value*n.value; }
+	friend Number operator+(Number& n1, Number& n2) { return n1.value+n2.value; }
+	//const Number& operator-(const Number& n) { return this->value-n.value; }
+	//const Number& operator*(const Number& n) { return this->value*n.value; }
+	friend Number operator-(Number& n1, Number& n2) { return n1.value-n2.value; }
+	friend Number operator*(Number& n1, Number& n2) { return n1.value*n2.value; }
+	friend Number operator%(Number& n1, Number& n2) { return n1.value%n2.value; }
 	friend ostream& operator<<(ostream& os, const Number& n){
 		return os << n.value;
 	}
@@ -83,11 +86,15 @@ int main()
 		double dd = sum_of_mult(vnd,vni);
 		cout << dd << endl;
 
+		cout << "c\%d=" << c%d << endl;
+		//cout << "a\%d=" << a%d << endl;
+
+		keep_window_open();
 		return 0;
 	}
 	catch (const exception &e)
 	{
-		cerr << "Exception: " << e.what() << '\n';
+		cerr << "Exception: " << e.what() << ";\n";
 		keep_window_open();
 		return 1;
 	}
